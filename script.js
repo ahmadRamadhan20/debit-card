@@ -1,73 +1,48 @@
-$(function () {
-    $('#cardnumber').payment('formatCardNumber')
-    $('#cardexpiration').payment('formatCardExpiry')
-    $('#cardcvc').payment('formatCardCVC')
-
-    $('#cardnumber').keyup(function (event) {
-        $('#label-cardnumber').empty().append($(this).val())
-    })
-
-    $('#cardexpiration').keyup(function (event) {
-        var data = $(this).val() + '<span>' + $('#cardcvc').val() + '</span>'
-        $('#label-cardexpiration').empty().append(data)
-    })
-
-    $('#cardcvc').keyup(function (event) {
-        var data =
-            $('#cardexpiration').val() + '<span>' + $(this).val() + '</span>'
-        $('#label-cardexpiration').empty().append(data)
-    })
-
-    $('.button-cta').on('click', function () {
-        var proceed = true
-        $('.field input').each(function () {
-            $(this)
-                .parent()
-                .find('path')
-                .each(function () {
-                    $(this).attr('fill', '#dddfe6')
-                })
-
-            if (!$.trim($(this).val())) {
-                $(this)
-                    .parent()
-                    .find('path')
-                    .each(function () {
-                        $(this).attr('fill', '#f1404b')
-                        proceed = false
-                    })
-
-                if (!proceed) {
-                    $(this)
-                        .parent()
-                        .find('svg')
-                        .animate({ opacity: '0.1' }, 'slow')
-                    $(this)
-                        .parent()
-                        .find('svg')
-                        .animate({ opacity: '1' }, 'slow')
-                    $(this)
-                        .parent()
-                        .find('svg')
-                        .animate({ opacity: '0.1' }, 'slow')
-                    $(this)
-                        .parent()
-                        .find('svg')
-                        .animate({ opacity: '1' }, 'slow')
-                }
-            }
-        })
-
-        if (proceed) {
-            //everything looks good! proceed purchase...
-            $('.field')
-                .find('path')
-                .each(function () {
-                    $(this).attr('fill', '#3ac569')
-                })
-            $('.payment').fadeToggle('slow', function () {
-                $('.paid').fadeToggle('slow', 'linear')
-            })
-        }
-    })
+var cardDrop = document.getElementById('card-dropdown')
+var activeDropdown
+cardDrop.addEventListener('click', function () {
+    var node
+    for (var i = 0; i < this.childNodes.length - 1; i++)
+        node = this.childNodes[i]
+    if (node.className === 'dropdown-select') {
+        node.classList.add('visible')
+        activeDropdown = node
+    }
 })
+
+window.onclick = function (e) {
+    console.log(e.target.tagName)
+    console.log('dropdown')
+    console.log(activeDropdown)
+    if (e.target.tagName === 'LI' && activeDropdown) {
+        if (e.target.innerHTML === 'Master Card') {
+            document.getElementById('credit-card-image').src =
+                'https://dl.dropboxusercontent.com/s/2vbqk5lcpi7hjoc/MasterCard_Logo.svg.png'
+            activeDropdown.classList.remove('visible')
+            activeDropdown = null
+            e.target.innerHTML =
+                document.getElementById('current-card').innerHTML
+            document.getElementById('current-card').innerHTML = 'Master Card'
+        } else if (e.target.innerHTML === 'American Express') {
+            document.getElementById('credit-card-image').src =
+                'https://dl.dropboxusercontent.com/s/f5hyn6u05ktql8d/amex-icon-6902.png'
+            activeDropdown.classList.remove('visible')
+            activeDropdown = null
+            e.target.innerHTML =
+                document.getElementById('current-card').innerHTML
+            document.getElementById('current-card').innerHTML =
+                'American Express'
+        } else if (e.target.innerHTML === 'Visa') {
+            document.getElementById('credit-card-image').src =
+                'https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png'
+            activeDropdown.classList.remove('visible')
+            activeDropdown = null
+            e.target.innerHTML =
+                document.getElementById('current-card').innerHTML
+            document.getElementById('current-card').innerHTML = 'Visa'
+        }
+    } else if (e.target.className !== 'dropdown-btn' && activeDropdown) {
+        activeDropdown.classList.remove('visible')
+        activeDropdown = null
+    }
+}
